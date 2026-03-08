@@ -1,0 +1,68 @@
+========= PARA COMEÇAR =========
+ir em file -> add folder to workerspace -> e add a api 
+
+CRIA A PASTA app/_lib/auth-client.ts
+
+depois no .env NEXT_PUBLIC_API_URL=
+  |_> nessa varievel n tem dado sensivel, nela a gente acessa no 'client component'( quando colocamos NEXT_PUBLIC, elas ficam acessiveis pelo client side)
+
+============== IA PARA GERAR ARQUIVOS ============
+  LEMBRE de usar o mcp de context7
+
+
+========= ORVAL ====
+ ELE vai tirar proveito da doc q é gerado pela api -> localhost:8081/swagger.json (doc da api, todas as rotas e retorno)
+ logo, o ORVAL vai gerar funções dessas documentações, assim ela pode chamar dentro do front
+
+ ##o better auth lida com auth por sessão, e essa sessão é salvas no coookies. aqui a gente cria um FETCH COSTUMIZADO, q ele dentro req, tem credentials, q chama da nossa api
+ ## esse arquivo é ligado com orval.config
+
+ ========= DICAS PARA USAR IA PARA GERAR TEXTO COM FALA ========
+ wispher flow
+
+ PAREI NO MINUTO 1:14:30
+
+
+ ========== MCP =========
+ mcp chrome devtools mcp
+ -> pede para ia fazer uma tela e usar o mcp do dev chrome, para ela validar a interface q vc esta esta fazendo
+ # precisa procurar as configurações para pode instalar o mcp
+
+ ========== CHATBOT =========
+ @ pnpm add ai
+ @ pnpm add ai-sdk/react
+ a bliblioteca nuqs ajuda na criação do chatbot ai
+  --> segue o prompt do uso da forma correta do chat 
+
+  - Armazene o estado de abertura do chat na URL e também armazene uma mensagem inicial que será enviada ao chat automaticamente. Use a biblioteca "nuqs" para fazer isso. Exemplo: localhost:3000?chat_open=true&chat_initial_message=message
+- Abra o chatbot ao clicar no botão central da barra de navegação (com ícone Sparkles).
+- Abra o chatbot ao clicar no botão "?" do @exercise-card.tsx e a mensagem inicial (passada via URL) deve ser "Como executar o exercício X corretamente?"
+- Use a biblioteca "streamdown" para formatar as mensagens do chatbot.
+- Ao abrir o chatbot e não haver nenhuma mensagem, exiba as seguintes mensagens sugeridas: "Monte meu plano de treino".
+- Seja 100% FIEL AO FIGMA. Veja https://www.figma.com/design/icjlmwVThvfpiYYXFld8gG/FIT.AI?node-id=131-493&m=dev
+
+
+
+-------------- no arquivo ai.ts NO !!!! BACKEND !!!!!
+
+GOOGLE_GENERATIVE_AI_API_KEY="" ---> DENTRO DO GOOGLE gemini
+pnpm add @ai-sdk/google
+import { google } from "@ai-sdk/google";
+model: google("gemini-2.5-flash"),
+
+
+============ DEPLOY =============
+PLATAFORMA USANDO O RENDER (BACK E DO FRONT)
+
+  const requestInit: RequestInit = {
+    ...options,
+    headers: requestHeaders,
+    credentials: "include", //fala para fetch o seguinte, em todas as req vc vai enviar todos os coockies para o back tbm. use serve para compartilhar coockies entro back e front.
+    // qualquer dominio pdoe definir cookie e isso é perigoso. logo o back e o front deve estar um mesmo subdominio, assim o coockie pode ser compartilhado. 
+  };
+
+
+DEPLOY USANDO DOCKER -> vc coloca no container tudo oq precisa para rodar o projeto
+ |_> para isso foi criado um dockerfile
+
+ docker build . -t gym-personal-trainer-api
