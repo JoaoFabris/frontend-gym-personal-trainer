@@ -1,9 +1,9 @@
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: "https://gym-personal-trainer-1.onrender.com",
 });
 
-authClient.signIn.social({
-    provider: 'google'
-})
+// authClient.signIn.social({
+//     provider: 'google'
+// })
