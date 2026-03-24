@@ -1,12 +1,12 @@
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
-import { authClient } from "@/app/_lib/auth-client";
-import { getUserTrainData, getHomeData } from "@/app/_lib/api/fetch-generated";
-import dayjs from "dayjs";
-import { BottomNav } from "@/app/_components/bottom-nav";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Weight, Ruler, BicepsFlexed, User } from "lucide-react";
-import { LogoutButton } from "./_components/logout-button";
+import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
+import { authClient } from '@/app/_lib/auth-client';
+import { getUserTrainData, getHomeData } from '@/app/_lib/api/fetch-generated';
+import dayjs from 'dayjs';
+import { BottomNav } from '@/app/_components/bottom-nav';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Weight, Ruler, BicepsFlexed, User } from 'lucide-react';
+import { LogoutButton } from './_components/logout-button';
 
 export default async function ProfilePage() {
   const session = await authClient.getSession({
@@ -15,21 +15,22 @@ export default async function ProfilePage() {
     },
   });
 
-  if (!session.data?.user) redirect("/auth");
+  if (!session.data?.user) redirect('/auth');
 
   const [trainData, homeData] = await Promise.all([
     getUserTrainData(),
-    getHomeData(dayjs().format("YYYY-MM-DD")),
+    getHomeData(dayjs().format('YYYY-MM-DD')),
   ]);
 
   if (trainData.status !== 200) {
-    throw new Error("Failed to fetch user train data");
+    throw new Error('Failed to fetch user train data');
   }
 
   const needsOnboarding =
-    (homeData.status === 200 && !homeData.data.activeWorkoutPlanId) ||
+    homeData.status === 404 ||
+    (homeData.status === 200 && !homeData.data?.activeWorkoutPlanId) ||
     !trainData.data;
-  if (needsOnboarding) redirect("/onboarding");
+  if (needsOnboarding) redirect('/onboarding');
 
   const user = session.data.user;
   const data = trainData.data;
@@ -44,7 +45,7 @@ export default async function ProfilePage() {
       <div className="flex h-[56px] items-center px-5">
         <p
           className="text-[22px] uppercase leading-[1.15] text-foreground"
-          style={{ fontFamily: "var(--font-anton)" }}
+          style={{ fontFamily: 'var(--font-anton)' }}
         >
           Fit.ai
         </p>
@@ -77,7 +78,7 @@ export default async function ProfilePage() {
             </div>
             <div className="flex flex-col items-center gap-1.5">
               <span className="font-heading text-2xl font-semibold leading-[1.15] text-foreground">
-                {weightInKg ?? "-"}
+                {weightInKg ?? '-'}
               </span>
               <span className="font-heading text-xs uppercase leading-[1.4] text-muted-foreground">
                 Kg
@@ -91,7 +92,7 @@ export default async function ProfilePage() {
             </div>
             <div className="flex flex-col items-center gap-1.5">
               <span className="font-heading text-2xl font-semibold leading-[1.15] text-foreground">
-                {heightInCm ?? "-"}
+                {heightInCm ?? '-'}
               </span>
               <span className="font-heading text-xs uppercase leading-[1.4] text-muted-foreground">
                 Cm
@@ -105,7 +106,7 @@ export default async function ProfilePage() {
             </div>
             <div className="flex flex-col items-center gap-1.5">
               <span className="font-heading text-2xl font-semibold leading-[1.15] text-foreground">
-                {bodyFatPercentage != null ? `${bodyFatPercentage}%` : "-"}
+                {bodyFatPercentage != null ? `${bodyFatPercentage}%` : '-'}
               </span>
               <span className="font-heading text-xs uppercase leading-[1.4] text-muted-foreground">
                 Gc
@@ -119,7 +120,7 @@ export default async function ProfilePage() {
             </div>
             <div className="flex flex-col items-center gap-1.5">
               <span className="font-heading text-2xl font-semibold leading-[1.15] text-foreground">
-                {age ?? "-"}
+                {age ?? '-'}
               </span>
               <span className="font-heading text-xs uppercase leading-[1.4] text-muted-foreground">
                 Anos

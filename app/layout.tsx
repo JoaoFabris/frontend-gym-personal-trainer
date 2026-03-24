@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Anton, Geist, Geist_Mono, Inter_Tight } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-// import { Chat } from "@/app/_components/chat";
+import { Chat } from "@/app/_components/chat";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -44,7 +44,7 @@ export default function RootLayout({
         <NuqsAdapter>
           {children}
           <Suspense>
-            {/* <Chat /> */}
+            <Chat />
           </Suspense>
         </NuqsAdapter>
       </body>

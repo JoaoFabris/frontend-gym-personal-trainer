@@ -1,21 +1,22 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
-import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport } from "ai";
-import { useQueryStates, parseAsBoolean, parseAsString } from "nuqs";
-import { Sparkles, X, ArrowUp } from "lucide-react";
-import { Streamdown } from "streamdown";
-import "streamdown/styles.css";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import Link from "next/link";
+import { useEffect, useRef } from 'react';
+import { useChat } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
+import { useQueryStates, parseAsBoolean, parseAsString } from 'nuqs';
+import { useRouter } from 'next/navigation';
+import { Sparkles, X, ArrowUp } from 'lucide-react';
+import { Streamdown } from 'streamdown';
+import 'streamdown/styles.css';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import Link from 'next/link';
 
-const SUGGESTED_MESSAGES = ["Monte meu plano de treino"];
+const SUGGESTED_MESSAGES = ['Monte meu plano de treino'];
 
 const chatFormSchema = z.object({
   message: z.string().min(1),
@@ -29,6 +30,7 @@ interface ChatProps {
 }
 
 export function Chat({ embedded = false, initialMessage }: ChatProps) {
+  const router = useRouter();
   const [chatParams, setChatParams] = useQueryStates({
     chat_open: parseAsBoolean.withDefault(false),
     chat_initial_message: parseAsString,
@@ -37,13 +39,18 @@ export function Chat({ embedded = false, initialMessage }: ChatProps) {
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
       api: `${process.env.NEXT_PUBLIC_API_URL}/ai`,
-      credentials: "include",
+      credentials: 'include',
     }),
+    onFinish: async () => {
+      if (embedded) {
+        router.refresh();
+      }
+    },
   });
 
   const form = useForm<ChatFormValues>({
     resolver: zodResolver(chatFormSchema),
-    defaultValues: { message: "" },
+    defaultValues: { message: '' },
   });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -82,7 +89,7 @@ export function Chat({ embedded = false, initialMessage }: ChatProps) {
   }, [embedded, chatParams.chat_open]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   if (!embedded && !chatParams.chat_open) return null;
@@ -100,15 +107,15 @@ export function Chat({ embedded = false, initialMessage }: ChatProps) {
     sendMessage({ text });
   };
 
-  const isStreaming = status === "streaming";
-  const isLoading = status === "submitted" || isStreaming;
+  const isStreaming = status === 'streaming';
+  const isLoading = status === 'submitted' || isStreaming;
 
   const chatContent = (
     <div
       className={
         embedded
-          ? "flex h-svh flex-col bg-background"
-          : "flex flex-1 flex-col overflow-hidden rounded-[20px] bg-background"
+          ? 'flex h-svh flex-col bg-background'
+          : 'flex flex-1 flex-col overflow-hidden rounded-[20px] bg-background'
       }
     >
       <div className="flex shrink-0 items-center justify-between border-b border-border p-5">
@@ -122,9 +129,7 @@ export function Chat({ embedded = false, initialMessage }: ChatProps) {
             </span>
             <div className="flex items-center gap-1">
               <div className="size-2 rounded-full bg-online" />
-              <span className="font-heading text-xs text-primary">
-                Online
-              </span>
+              <span className="font-heading text-xs text-primary">Online</span>
             </div>
           </div>
         </div>
@@ -144,21 +149,21 @@ export function Chat({ embedded = false, initialMessage }: ChatProps) {
           <div
             key={message.id}
             className={
-              message.role === "assistant"
-                ? "flex flex-col items-start pl-5 pr-[60px] pt-5"
-                : "flex flex-col items-end pl-[60px] pr-5 pt-5"
+              message.role === 'assistant'
+                ? 'flex flex-col items-start pl-5 pr-[60px] pt-5'
+                : 'flex flex-col items-end pl-[60px] pr-5 pt-5'
             }
           >
             <div
               className={
-                message.role === "assistant"
-                  ? "rounded-xl bg-secondary p-3"
-                  : "rounded-xl bg-primary p-3"
+                message.role === 'assistant'
+                  ? 'rounded-xl bg-secondary p-3'
+                  : 'rounded-xl bg-primary p-3'
               }
             >
-              {message.role === "assistant" ? (
+              {message.role === 'assistant' ? (
                 message.parts.map((part, index) =>
-                  part.type === "text" ? (
+                  part.type === 'text' ? (
                     <Streamdown
                       key={index}
                       isAnimating={
@@ -169,17 +174,16 @@ export function Chat({ embedded = false, initialMessage }: ChatProps) {
                     >
                       {part.text}
                     </Streamdown>
-                  ) : null
+                  ) : null,
                 )
               ) : (
                 <p className="font-heading text-sm leading-relaxed text-primary-foreground">
                   {message.parts
-                    .filter((part) => part.type === "text")
+                    .filter((part) => part.type === 'text')
                     .map(
-                      (part) =>
-                        (part as { type: "text"; text: string }).text
+                      (part) => (part as { type: 'text'; text: string }).text,
                     )
-                    .join("")}
+                    .join('')}
                 </p>
               )}
             </div>
@@ -225,7 +229,7 @@ export function Chat({ embedded = false, initialMessage }: ChatProps) {
             />
             <Button
               type="submit"
-              disabled={!form.watch("message").trim() || isLoading}
+              disabled={!form.watch('message').trim() || isLoading}
               size="icon"
               className="size-[42px] shrink-0 rounded-full"
             >
