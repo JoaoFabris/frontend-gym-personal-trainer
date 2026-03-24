@@ -1,7 +1,7 @@
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
-  baseURL: "https://gym-personal-trainer-1.onrender.com",
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
 // authClient.signIn.social({
