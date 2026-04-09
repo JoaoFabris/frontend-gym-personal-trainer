@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { getHomeData, getUserTrainData } from "@/app/_lib/api/fetch-generated";
 import dayjs from "dayjs";
 import { Chat } from "@/app/_components/chat";
+import { LogoutButton } from "@/app/profile/_components/logout-button"; // ← Importar daqui
 
 export default async function OnboardingPage() {
   const session = await authClient.getSession({
@@ -28,5 +29,15 @@ export default async function OnboardingPage() {
     redirect("/");
   }
 
-  return <Chat embedded initialMessage="Quero começar a melhorar minha saúde!" />;
+   return (
+    <div className="relative w-full h-screen">
+      {/* Logout Button - Fixo no topo direito */}
+      <div className="fixed top-6.5 right-40 z-50">
+        <LogoutButton />
+      </div>
+
+      {/* Chat */}
+      <Chat embedded initialMessage="Quero começar a melhorar minha saúde!" />
+    </div>
+  );
 }
